@@ -4,13 +4,11 @@
 # derniere modification : 04/05/2022
 
 # A FAIRE :
-#   - Changer pseudo si déjà pris
-#   - Ajouter un système de mise à jour automatique
-#   - Messages d'erreurs des commandes incomplètes 
-#   - Bouton send pour client
+#   - Changer pseudo si déjà pris (Actuellement refuse la connection)
+#   - Ajouter un système de mise à jour automatique (EN COURS)
+#   - Messages d'erreurs des commandes incomplètes (QUASIMENT FINI)
 #   - Echanger Ctrl Entree / Entree
-#   - Grand écran client
-#   - Nom et ip confirmées en appuyant sur Entrée 
+#   - Nom et ip confirmées en appuyant sur Entrée
 #   - R.S.A. (tout dépend d'Antonin)
 
 
@@ -111,8 +109,8 @@ def start_client():
     window.destroy()
     CLIENT()
 
-ICON_PATH = resource_path("images/icon.ico")
-LOGO_PATH = resource_path("images/logo.png")
+ICON_PATH = resource_path("icon.ico")
+LOGO_PATH = resource_path("logo.png")
 
 
 
