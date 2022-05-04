@@ -1,6 +1,5 @@
 # coding: utf-8
-# ChatBox
-# Version 3.3
+# ChatBox v3.3
 # derniere modification : 04/05/2022
 
 # A FAIRE :
@@ -23,7 +22,9 @@ import socket
 import threading
 import tkinter
 from tkinter import scrolledtext, messagebox
+import requests
 
+ 
 
 
 
@@ -32,7 +33,6 @@ from tkinter import scrolledtext, messagebox
 #------------------------------------------------------------------------------------
 
 HELP_MESSAGE = """Liste des commandes :
-
 /help                       : Affiche ce message
 /help_syntax                : Affiche le message d'aide concernant la syntaxe
 /kick <nom>                 : Exclu un client
@@ -43,7 +43,6 @@ HELP_MESSAGE = """Liste des commandes :
 /online | /list             : Affiche la liste des clients connectés
 /close | /stop              : Eteint le serveur (demande confirmation)
 /ip                         : Affiche l'ip et le port du serveur
-
 """
 
 SYNTAX_HELP_MESSAGE = """Avec les commandes /broadcast | /br et /msg | /w :
@@ -54,11 +53,11 @@ _   : Souligné
 [   : Gras et bleu
 !   : Gros (16 -> 32)
 /!\ : Gros et rouge
-
 """
 
 NEW_LINE_CHAR = """
 """
+
 MONO_FONT = ("Courier New",20)
 BASE_FONT = "Helvetica"
 DEFAULT_FONT = (BASE_FONT,16)
@@ -86,12 +85,24 @@ DARK_GRAY = "#222222"
 BLACK = "#000000"
 PALE_YELLOW = "#e0e090"
 
+GITHUB_PATH = "https://raw.githubusercontent.com/HubertBDLB/ChatBox/main/main.py"
 
-
+VERSION = "ChatBox v3.3"
 
 #------------------------------------------------------------------------------------
 #                                      FONCTIONS
 #------------------------------------------------------------------------------------
+def update():
+    r = requests.get(GITHUB_PATH)
+    with open("last_version.py", 'wb') as f:    
+        f.write(r.content)
+    
+    with open("last_version.py") as f:
+        lines = f.read()
+        if lines.split('\n')[1] != ("# " + VERSION):
+            print('NEW VERSION')
+        else:
+            print('ALREADY UPDATED')
 
 def resource_path(relative_path):
     """Récupère le chemin absolu d'un chemin relatif d'une ressource"""
@@ -595,7 +606,7 @@ class CLIENT:
 #------------------------------------------------------------------------------------
 #                                       CHOIX SERVEUR CLIENT
 #------------------------------------------------------------------------------------
-
+update()
 window = tkinter.Tk()
 window.configure(bg=DARK_BLUE)
 window.geometry("400x200")
