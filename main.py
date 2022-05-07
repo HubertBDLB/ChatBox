@@ -1,5 +1,5 @@
 # coding: utf-8
-# ChatBox v3.3
+# ChatBox v3.4
 # derniere modification : 04/05/2022
 
 # A FAIRE :
@@ -9,6 +9,8 @@
 #   - Echanger Ctrl Entree / Entree
 #   - Nom et ip confirmées en appuyant sur Entrée
 #   - R.S.A. (tout dépend d'Antonin)
+
+
 
 
 #------------------------------------------------------------------------------------
@@ -31,6 +33,10 @@ import requests
 #------------------------------------------------------------------------------------
 #                                      CONSTANTES
 #------------------------------------------------------------------------------------
+
+GITHUB_PATH = "https://raw.githubusercontent.com/HubertBDLB/ChatBox/main/"
+
+VERSION = "ChatBox v3.2"
 
 HELP_MESSAGE = """Liste des commandes :
 /help                       : Affiche ce message
@@ -85,24 +91,36 @@ DARK_GRAY = "#222222"
 BLACK = "#000000"
 PALE_YELLOW = "#e0e090"
 
-GITHUB_PATH = "https://raw.githubusercontent.com/HubertBDLB/ChatBox/main/main.py"
 
-VERSION = "ChatBox v3.3"
+
 
 #------------------------------------------------------------------------------------
 #                                      FONCTIONS
 #------------------------------------------------------------------------------------
 def update():
-    r = requests.get(GITHUB_PATH)
-    with open("last_version.py", 'wb') as f:    
+    r = requests.get(GITHUB_PATH + 'main.py')
+    with open("github_last_version.py", 'wb') as f:    
         f.write(r.content)
     
-    with open("last_version.py") as f:
+    with open("github_last_version.py") as f:
         lines = f.read()
         if lines.split('\n')[1] != ("# " + VERSION):
-            print('NEW VERSION')
+            files = [
+                "readme.md",
+                "icon.ico",
+                "icon2.ico",
+                "logo.png",
+                "main.py",
+            ]
+
+            os.mkdir('last_version')
+            for f in files:
+                r = requests.get(GITHUB_PATH + f)
+                with open('last_version/' + f,"wb") as g:
+                    g.write(r.content)
         else:
-            print('ALREADY UPDATED')
+            f.close()
+            os.remove("github_last_version.py")
 
 def resource_path(relative_path):
     """Récupère le chemin absolu d'un chemin relatif d'une ressource"""
@@ -120,8 +138,8 @@ def start_client():
     window.destroy()
     CLIENT()
 
-ICON_PATH = resource_path("icon.ico")
-LOGO_PATH = resource_path("logo.png")
+ICON_PATH = resource_path("icon_1024.ico")
+LOGO_PATH = resource_path("logo_6144_2048.png")
 
 
 
@@ -229,7 +247,7 @@ class SERVER:
                     self.log(f"ERREUR : Syntaxe : /msg | /w <nom>\n","error")
 
             elif command in ["ip"]:
-                self.log(f"{self.host}:{self.port}","command_result")
+                self.log(f"{self.host}:{self.port}\n","command_result")
 
             elif command in ["blacklist"]:
                 self.log_banned_clients()
@@ -290,7 +308,7 @@ class SERVER:
         self.log(self.get_online_members(names_only = False),"command_result")
 
     def log_banned_clients(self):
-        self.log(str(self.blacklist),"command_result")
+        self.log(str(self.blacklist) + '\n',"command_result")
 
     def ban(self,name):
         """Kick et refuse les tentatives de connection d'un client donné"""
