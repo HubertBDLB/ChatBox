@@ -1,8 +1,9 @@
 # coding: utf-8
-# ChatBox v3.4
-# derniere modification : 04/05/2022
+# ChatBox v3.5
+# derniere modification : 16/05/2022
 
 # A FAIRE :
+#   -- Mettre à jour cette liste
 #   - Changer pseudo si déjà pris (Actuellement refuse la connection)
 #   - Ajouter un système de mise à jour automatique (EN COURS)
 #   - Messages d'erreurs des commandes incomplètes (QUASIMENT FINI)
@@ -17,6 +18,7 @@
 #                                      BIBLIOTHEQUES
 #------------------------------------------------------------------------------------
 
+from shutil import rmtree
 import sys
 import os
 import timeit
@@ -25,9 +27,7 @@ import threading
 import tkinter
 from tkinter import scrolledtext, messagebox
 import requests
-
  
-
 
 
 #------------------------------------------------------------------------------------
@@ -36,7 +36,9 @@ import requests
 
 GITHUB_PATH = "https://raw.githubusercontent.com/HubertBDLB/ChatBox/main/"
 
-VERSION = "ChatBox v3.2"
+IMAGES_PATH = "images/"
+
+VERSION = "ChatBox v3.3"
 
 HELP_MESSAGE = """Liste des commandes :
 /help                       : Affiche ce message
@@ -79,6 +81,8 @@ RIGHT = "right"
 X = "x"
 Y = "y"
 BOTH = "both"
+DISABLED = "disabled"
+ENABLED = "normal"
 
 RED = "#ff0000"
 DARK_BLUE = "#004080"
@@ -98,34 +102,35 @@ PALE_YELLOW = "#e0e090"
 #                                      FONCTIONS
 #------------------------------------------------------------------------------------
 def update():
-    r = requests.get(GITHUB_PATH + 'main.py')
-    with open("github_last_version.py", 'wb') as f:    
-        f.write(r.content)
-    
-    with open("github_last_version.py") as f:
-        lines = f.read()
-        if lines.split('\n')[1] != ("# " + VERSION):
-            files = [
-                "readme.md",
-                "icon.ico",
-                "icon2.ico",
-                "logo.png",
-                "main.py",
-            ]
+    try: rmtree('last_version')
+    except Exception as e: print(e)
 
-            os.mkdir('last_version')
-            for f in files:
-                r = requests.get(GITHUB_PATH + f)
-                with open('last_version/' + f,"wb") as g:
-                    g.write(r.content)
-        else:
-            f.close()
-            os.remove("github_last_version.py")
+    os.remove("main.exe")
+
+    version_request = requests.get(GITHUB_PATH + 'README.md')
+    if version_request.content.decode("utf-8").split(NEW_LINE_CHAR)[0] != VERSION:
+        # try: 
+        exe_request = requests.get(GITHUB_PATH + 'main.exe')
+        with open("main.exe","wb") as f:
+            f.write(exe_request.content)
+        print('3')
+        exit(0)
+            
+        # except Exception as e: print(e)
+
 
 def resource_path(relative_path):
     """Récupère le chemin absolu d'un chemin relatif d'une ressource"""
     base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
     return os.path.join(base_path, relative_path)
+
+def get_public_ip():
+    endpoint = 'https://ipinfo.io/json'
+    response = requests.get(endpoint, verify = True)
+    if response.status_code != 200:
+        return 'Status:', response.status_code, 'Problem with the request. Exiting.'
+    data = response.json()
+    return data['ip']
 
 
 def start_server():
@@ -138,8 +143,8 @@ def start_client():
     window.destroy()
     CLIENT()
 
-ICON_PATH = resource_path("icon_1024.ico")
-LOGO_PATH = resource_path("logo_6144_2048.png")
+ICON_PATH = resource_path(IMAGES_PATH + "icon_256.ico")
+LOGO_PATH = resource_path(IMAGES_PATH + "logo_192_64.png")
 
 
 
@@ -150,7 +155,7 @@ LOGO_PATH = resource_path("logo_6144_2048.png")
 
 class SERVER:
     def __init__(self):
-        self.host = socket.gethostbyname_ex(socket.getfqdn())[2][1]
+        self.host = socket.gethostbyname_ex(socket.getfqdn())[2][0]
         self.port = 9090
         self.gui_done = False
         self.running = True
@@ -159,8 +164,8 @@ class SERVER:
         gui_thread.start()
 
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server.bind((self.host,self.port))
-        
+        self.server.bind(('',self.port))
+
         self.server.listen()
 
         self.blacklist = [] 
@@ -170,6 +175,7 @@ class SERVER:
             pass
         if self.gui_done:
             self.log(f"Le serveur {self.host}:{self.port} est en ligne\n")
+            self.log(HELP_MESSAGE,"command_result")
             self.receive()
 
     def gui_loop(self):
@@ -198,6 +204,24 @@ class SERVER:
         self.win.protocol('WM_DELETE_WINDOW',self.stop)
         self.win.mainloop()
 
+    def forward_port(self):
+        host2 = '79.90.222.182'
+        port2 = 9090
+
+        server = socket.socket(socket.AF_INET,socket.SOCK_STREAM) 
+        server.bind((self.host,self.port)) 
+
+        client = socket.socket( socket.AF_INET, socket.SOCK_STREAM ) 
+        client.connect((host2,port2)) 
+
+        server.listen(5) 
+        ss, addr = server.accept() 
+
+        while 1: 
+            msg = ss.recv(20480) 
+            client.send(msg) 
+            buf=client.recv(20480) 
+            ss.send(buf) 
     # Commandes
     
     def execute(self,event = None):
@@ -210,47 +234,44 @@ class SERVER:
             parameter = message[(len(command)+2):]
             
             if command in ["help"]:
-                self.log(HELP_MESSAGE,"command_result")
+                try: self.log(HELP_MESSAGE,"command_result")
+                except Exception as e: self.log(f"ERREUR : {e}\n","error")
 
             elif command in ["help_syntax"]:
-                self.log(SYNTAX_HELP_MESSAGE,"command_result")
+                try: self.log(SYNTAX_HELP_MESSAGE,"command_result")
+                except Exception as e: self.log(f"ERREUR : {e}\n","error")
 
             elif command in ["kick"]:
-                try:
-                    self.kick(parameter.replace(NEW_LINE_CHAR,''))
-                except Exception as e:
-                    self.log(e,"error")
+                try: self.kick(parameter.replace(NEW_LINE_CHAR,''))
+                except Exception as e: self.log(f"ERREUR : {e}\n","error")
                     
             elif command in ["broadcast","br"]:
-                self.broadcast(parameter)
-
+                try: self.broadcast(parameter)
+                except Exception as e: self.log(e,"error")
+                
             elif command in ["close","stop"]:
-                self.stop()
-            
+                try: self.stop()
+                except Exception as e: self.log(e,"error")
+
             elif command in ["online","list"]:
-                self.log_online_members()
+                try: self.log_online_members()
+                except Exception as e: self.log(e,"error")
 
             elif command in ["ban"]:
-                client_name = parameter.split()[0]
-                self.ban(client_name)
+                try: self.ban(parameter.split()[0])
+                except Exception as e: self.log(e,"error")
 
             elif command in ["msg","w"]:
-                try:
-                    client_name = parameter.split()[0]
-                    msg = parameter[len(client_name)+1:]
-                    client = self.get_socket_from_name(client_name)
-                    client.send(msg.encode("utf-8"))
-                    self.log(f"Message envoyé\n","command_result")
-                except ValueError:
-                    self.log(f"ERREUR : {client_name} n'est pas connecté\n","error")
-                except IndexError:
-                    self.log(f"ERREUR : Syntaxe : /msg | /w <nom>\n","error")
+                try: self.msg(parameter.split()[0],parameter[len(parameter.split()[0])+1:])
+                except Exception as e: self.log(e,"error")
 
             elif command in ["ip"]:
-                self.log(f"{self.host}:{self.port}\n","command_result")
+                try: self.log(f"{self.host}:{self.port}\n","command_result")
+                except Exception as e: self.log(e,"error")
 
             elif command in ["blacklist"]:
-                self.log_banned_clients()
+                try: self.log_banned_clients()
+                except Exception as e: self.log(e,"error")
 
             else:
                 self.log("Cette commande n'existe pas.\nAfficher la liste des commandes : /help\n","command_result")
@@ -290,6 +311,17 @@ class SERVER:
         self.input_area.delete('1.0','end')
         self.text_area.yview("end")
     
+    def msg(self,name,message):
+        try:
+            self.get_socket_from_name(name).send(message.encode("utf-8"))
+            self.log(f"Message envoyé\n","command_result")
+
+        except ValueError:
+            self.log(f"ERREUR : {name} n'est pas connecté\n","error")
+
+        except IndexError:
+            self.log(f"ERREUR : Syntaxe : /msg | /w <nom>\n","error")
+
     def get_online_members(self,names_only = False):
         online_members = ""
         if self.clients == {}: 
@@ -308,7 +340,10 @@ class SERVER:
         self.log(self.get_online_members(names_only = False),"command_result")
 
     def log_banned_clients(self):
-        self.log(str(self.blacklist) + '\n',"command_result")
+        if self.blacklist == []:
+            self.log("La liste noire est vide\n","command_result")
+        else: 
+            self.log(str(self.blacklist) + '\n',"command_result")
 
     def ban(self,name):
         """Kick et refuse les tentatives de connection d'un client donné"""
@@ -432,7 +467,7 @@ class CLIENT:
         self.win.protocol("WM_DELETE_WINDOW",self.stop)
         self.win.mainloop()
 
-    def nickname_choice(self):
+    def nickname_choice(self,event = None):
         self.nickname = ""
         self.nickname = self.nickname_entry.get()
         if self.is_nickname_valid(self.nickname):
@@ -440,7 +475,7 @@ class CLIENT:
         else:
             self.error_label.config(text="Le nom doit faire entre 3 et 16 caractères et ne\ncomporter que des caractères alphanumériques")
 
-    def server_choice(self):
+    def server_choice(self,event = None):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.host = self.server_entry.get()
 
@@ -465,13 +500,14 @@ class CLIENT:
     def create_nickname_choice_gui(self):
         self.win.maxsize(500,290)
         self.logo = tkinter.PhotoImage(file=LOGO_PATH)
-        tkinter.Label(image=self.logo,bg=DARK_BLUE).pack()
         self.nickname_frame = tkinter.Frame(self.win,bg=DARK_BLUE)
         self.nickname_label = tkinter.Label(self.nickname_frame,text = "Choisissez un nom",bg=DARK_BLUE,fg=WHITE,font=DEFAULT_FONT)
         self.nickname_entry = tkinter.Entry(self.nickname_frame,font=DEFAULT_FONT)
         self.confirm_button = tkinter.Button(self.nickname_frame,text="Continuer",bg=DARKER_BLUE,fg=WHITE,font=DEFAULT_FONT,command=self.nickname_choice)
         self.error_label = tkinter.Label(self.nickname_frame,bg=WHITE,fg=RED,font=DEFAULT_FONT)
+        self.nickname_entry.bind("<Return>", self.nickname_choice)
 
+        tkinter.Label(self.nickname_frame,image=self.logo,bg=DARK_BLUE).pack()
         self.nickname_frame.pack(expand=True,fill=BOTH)
         self.nickname_label.pack(fill=BOTH,padx=10,pady=10)
         self.nickname_entry.pack(fill=BOTH,padx=10,pady=10)
@@ -485,6 +521,7 @@ class CLIENT:
         self.server_entry = tkinter.Entry(self.server_frame,font=DEFAULT_FONT)
         self.confirm_button = tkinter.Button(self.server_frame,text="Se connecter",bg=DARKER_BLUE,fg=WHITE,font=DEFAULT_FONT,command=self.server_choice)
         self.error_label = tkinter.Label(self.server_frame,bg=WHITE,fg=RED,font=DEFAULT_FONT)
+        self.server_entry.bind("<Return>", self.server_choice)
 
         self.server_frame.pack(expand=True,fill=BOTH)
         self.server_label.pack(fill=BOTH,padx=10,pady=10)
@@ -499,7 +536,7 @@ class CLIENT:
         self.win.state('zoomed') # Plein écran
 
         self.text_frame = tkinter.Frame(self.win,bg=DARK_BLUE)
-        self.text_area = scrolledtext.ScrolledText(self.text_frame,font = MONO_FONT)
+        self.text_area = scrolledtext.ScrolledText(self.text_frame,font = DEFAULT_FONT)
         self.input_area = tkinter.Text(self.text_frame,height=3)
         self.send_button = tkinter.Button(self.text_frame,height=3,text="Envoyer",command=self.write)
         
@@ -520,7 +557,6 @@ class CLIENT:
             self.connected = True
         except Exception as e:
             self.error_label.config(text=f"Impossible de se connecter au serveur\n{self.host}:{self.port}")
-            print(e)
             
     def write(self, event = None):
         input = self.input_area.get("1.0","end")
@@ -562,32 +598,15 @@ class CLIENT:
     # Fonctions utiles
 
     def log(self,message):
-        if "@" + self.nickname in message:
-            self.text_area.insert("end", message,"mention")
-                        
-        elif message.startswith(self.nickname):
-            self.text_area.insert("end", message,"own_msg")
-
-        elif message.startswith("["):
-            self.text_area.insert("end", message,"msg_info")
-            
-        elif message.startswith("*"):
-            self.text_area.insert("end",message[1:],"bold")
-
-        elif message.startswith("!"):
-            self.text_area.insert("end",message[1:],"big")
-
-        elif message.startswith("_"):
-            self.text_area.insert("end",message[1:],"underlined")
-
-        elif message.startswith("-"):
-            self.text_area.insert("end",message[1:],"italic")
-
-        elif message.startswith("/!\\"):
-            self.text_area.insert("end",message[3:],"warning")
-
-        else:
-            self.text_area.insert("end",message)
+        if "@" + self.nickname in message: self.text_area.insert("end", message,"mention")
+        elif message.startswith(self.nickname): self.text_area.insert("end", message,"own_msg")
+        elif message.startswith("["): self.text_area.insert("end", message,"msg_info")
+        elif message.startswith("*"): self.text_area.insert("end",message[1:],"bold")
+        elif message.startswith("!"): self.text_area.insert("end",message[1:],"big")
+        elif message.startswith("_"): self.text_area.insert("end",message[1:],"underlined")
+        elif message.startswith("-"): self.text_area.insert("end",message[1:],"italic")
+        elif message.startswith("/!\\"): self.text_area.insert("end",message[3:],"warning")
+        else: self.text_area.insert("end",message)
 
         self.text_area.tag_config("mention",background=PALE_YELLOW)
         self.text_area.tag_config("msg_info",foreground=DARK_BLUE,font=BOLD_FONT) 
@@ -624,24 +643,36 @@ class CLIENT:
 #------------------------------------------------------------------------------------
 #                                       CHOIX SERVEUR CLIENT
 #------------------------------------------------------------------------------------
-update()
-window = tkinter.Tk()
-window.configure(bg=DARK_BLUE)
-window.geometry("400x200")
-window.eval("tk::PlaceWindow . center")
-window.maxsize(400,200)
-window.minsize(400,200)
-window.wm_iconbitmap(ICON_PATH)
+def main():
+    global window, server_button, client_button
+    window = tkinter.Tk()
+    window.configure(bg=DARK_BLUE)
+    window.geometry("400x250")
+    window.title("ChatBox")
+    window.eval("tk::PlaceWindow . center")
+    window.maxsize(400,250)
+    window.minsize(400,250)
+    window.wm_iconbitmap(ICON_PATH)
+    logo = tkinter.PhotoImage(file=LOGO_PATH)
+    tkinter.Label(window,image=logo,bg=DARK_BLUE).pack()
 
-logo = tkinter.PhotoImage(file=LOGO_PATH)
+    server_button = tkinter.Button(window,text="Créer un serveur",padx=10,pady=10,bg=DARK_BLUE,fg=WHITE,font=DEFAULT_FONT,command=start_server)
+    client_button = tkinter.Button(window,text="Rejoindre un serveur",padx=10,pady=10,bg=DARK_BLUE,fg=WHITE,font=DEFAULT_FONT,command=start_client)
+    server_button.pack(expand=True,fill=BOTH)
+    client_button.pack(expand=True,fill=BOTH)
 
-widgets = [
-    tkinter.Label(window,image=logo,bg=DARK_BLUE),
-    tkinter.Button(window,text="Créer un serveur",padx=10,pady=10,bg=DARK_BLUE,fg=WHITE,font=DEFAULT_FONT,command=start_server),
-    tkinter.Button(window,text="Rejoindre un serveur",padx=10,pady=10,bg=DARK_BLUE,fg=WHITE,font=DEFAULT_FONT,command=start_client)
-    ]
+    server_button.configure(state=DISABLED)
+    client_button.configure(state=DISABLED)
+    update_label = tkinter.Label(window,text='Vérification des mises à jour...',bg=DARK_BLUE,fg=WHITE,font=DEFAULT_FONT)
+    update_label.pack()
+    window.update()
 
-for w in widgets:
-    w.pack(expand=True,fill=BOTH)
+    update()
 
-window.mainloop()
+    update_label.destroy()
+    server_button.configure(state=ENABLED)
+    client_button.configure(state=ENABLED)
+    
+    window.mainloop()
+if __name__ == '__main__':
+    main()
