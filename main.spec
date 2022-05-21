@@ -9,7 +9,7 @@ added_files = [
     ]
 
 a = Analysis(['main.py'],
-             pathex=["C:\\Users\\user2\\OneDrive\\Documents\\Prog\\Python\\MIC\\main\\V3.3"],
+             pathex=["C:\\Users\\user2\\OneDrive\\Documents\\Prog\\Python\\MIC\\main\\V3.6"],
              binaries=[],
              datas=added_files,
              hiddenimports=[],
