@@ -509,9 +509,9 @@ class CLIENT:
         self.connect_thread = threading.Thread(target=self.connect)
         self.connect_thread.start()
 
-        while timeit.default_timer()-start < 4 and not self.connected:
+        while timeit.default_timer()-start < 10 and not self.connected:
             pass
-        if timeit.default_timer()-start >= 4 and not self.connected:
+        if timeit.default_timer()-start >= 10 and not self.connected:
             self.error_label.config(text=f"{self.host}:{self.port} a mis trop de temps pour répondre")
 
         # Ouverture de la fenêtre principale
