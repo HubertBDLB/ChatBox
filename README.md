@@ -4,8 +4,6 @@ ChatBox v3.5
 Logiciel de chat en réseau local
 Le programme est un simple fichier exe
 
----
-
 ## Installation
 
 Téléchargez main.exe et executez le
