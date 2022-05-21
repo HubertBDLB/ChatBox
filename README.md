@@ -14,6 +14,8 @@ Le programme est un simple fichier exe
 
 Téléchargez ChatBox.exe et executez le
 
+lien de téléchargement : https://github.com/HubertBDLB/ChatBox/raw/main/ChatBox.exe
+
 Les mises à jour sont automatiques
 
 
