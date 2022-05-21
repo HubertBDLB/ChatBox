@@ -10,7 +10,7 @@ Le programme est un simple fichier exe
 Téléchargez ChatBox.exe et executez le
 Les mises à jour sont automatiques
 
-####Crédits
+#### Crédits
 Développement : Maxime P.
 Cryptage (on attend toujours) : Antonin N.
 Images : Hugo R.  Reda D.  Christophe C.
