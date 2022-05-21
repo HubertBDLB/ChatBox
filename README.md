@@ -16,7 +16,7 @@ Téléchargez ChatBox.exe et executez le
 Les mises à jour sont automatiques
 
 
-### Auteurs
+## Auteurs
 - Développement : Maxime P.
 - Cryptage (on attend toujours) : Antonin N.
 - Images : Hugo R.  Reda D.  Christophe C.
