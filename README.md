@@ -13,6 +13,7 @@ Le programme est un simple fichier exe
 ## Installation
 
 Téléchargez ChatBox.exe et executez le
+
 Les mises à jour sont automatiques
 
 
