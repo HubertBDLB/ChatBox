@@ -7,5 +7,11 @@ Le programme est un simple fichier exe
 
 ## Installation
 
-Téléchargez main.exe et executez le
+Téléchargez ChatBox.exe et executez le
 Les mises à jour sont automatiques
+
+####Crédits
+Développement : Maxime P.
+Cryptage (on attend toujours) : Antonin N.
+Images : Hugo R.  Reda D.  Christophe C.
+Tests : Antonin N.
