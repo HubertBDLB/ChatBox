@@ -1,5 +1,5 @@
 ChatBox v3.6
-date: "Modifié pour la dernière fois le `r format(Sys.time(), '%d %B, %Y')`"
+date: "Modifié pour la dernière fois le `format(Sys.time(), '%d %B, %Y')`"
 # ChatBox
 
 Logiciel de chat en réseau local
