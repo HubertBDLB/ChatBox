@@ -22,11 +22,11 @@ Logiciel de chat en réseau local
 1. Assurez vous d'avoir une connexion à internet
 2. Télécharger le fichier (*voir au dessus*)
 3. Installation : 
-- Démarrer l'application en executant ChatBox.exe
+Démarrer l'application en executant ChatBox.exe
 
 OU
 
-- Placer ChatBox.exe dans le dossier d'applications et créer un raccourci sur le bureau
+Placer ChatBox.exe dans le dossier d'applications et créer un raccourci sur le bureau
 
 
 ## Mise à jour
