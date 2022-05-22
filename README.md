@@ -9,18 +9,18 @@ Modifié pour la dernière fois le 22 mai 2022
 
 Logiciel de chat en réseau local
 
-Lien de téléchargement : https://raw.githubusercontent.com/HubertBDLB/ChatBox/main/ChatBox.exe
+[Télécharger](https://raw.githubusercontent.com/HubertBDLB/ChatBox/main/ChatBox.exe)
 
-Mode d'emploi (markdown): https://github.com/HubertBDLB/ChatBox/blob/main/README.md
+[Mode d'emploi](https://github.com/HubertBDLB/ChatBox/blob/main/README.md)
 
-Mode d'emploi (html): https://htmlpreview.github.io/?https://raw.githubusercontent.com/HubertBDLB/ChatBox/main/README.html
+[Site internet](https://hubertbdlb.github.io/ChatBox/)
 # Mode d'emploi
 
 
 ## Installation:
 
 1. Assurez vous d'avoir une connexion à internet
-2. Télécharger le fichier ChatBox.exe https://raw.githubusercontent.com/HubertBDLB/ChatBox/main/ChatBox.exe
+2. Télécharger le fichier (*voir au dessus*)
 3. Installation : 
 - Démarrer l'application en executant ChatBox.exe
 
