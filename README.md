@@ -3,15 +3,9 @@ ChatBox v3.6
 Modifié pour la dernière fois le 22 mai 2022
 
 
-
-
-
 # ChatBox v3.6
 
 Logiciel de chat en réseau local
-
-
-
 
 
 # Mode d'emploi
@@ -29,11 +23,9 @@ OU
 - Placer ChatBox.exe dans le dossier d'applications et créer un raccourci sur le bureau
 
 
-
 ## Mise à jour
 
 Les mises à jour sont obligatoires et se font automatiquement depuis la v3.7 lors du démarrage de l'application.
-
 
 
 ## Démarrer un serveur
@@ -43,21 +35,18 @@ Les mises à jour sont obligatoires et se font automatiquement depuis la v3.7 lo
 3. Un message contenant l'addresse ip et le port du serveur ainsi qu'un message d'aide s'affichera
 
 
-
 ## Se connecter à un serveur
 
 1. Une fois la mise à jour effectuée cliquez sur [Rejoindre un serveur]
-
+2. Choisissez un nom. **Attention !** le nom de doit contenir que des caractères alphanumériques et contenir entre 3 et 16 caractères compris
+3. Entrez l'addresse ip du serveur. **Ne pas préciser le port**
 
 
 ## Inviter quelqu'un sur votre serveur
 
 1. Assurez vous que la personne à inviter est connectée au même réseau que vous
 2. Démarrez un serveur *Instructions au dessus*
-3. Donnez à la personne l'addresse ip sans le port 
-
-
-
+3. Donnez à la personne l'addresse ip sans le port
 
 
 # Auteurs
