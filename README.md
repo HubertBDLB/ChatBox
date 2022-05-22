@@ -11,19 +11,10 @@ Logiciel de chat en réseau local
 
 [Télécharger](https://raw.githubusercontent.com/HubertBDLB/ChatBox/main/ChatBox.exe)
 
-[Mode d'emploi](https://github.com/HubertBDLB/ChatBox/blob/main/README.md)
-
 [Site internet](https://hubertbdlb.github.io/ChatBox/)
-# Mode d'emploi
 
 
-## Installation:
-
-1. Assurez vous d'avoir une connexion à internet
-2. Télécharger puis executer le fichier [ChatBox.exe](https://raw.githubusercontent.com/HubertBDLB/ChatBox/main/ChatBox.exe)
-
-
-## Mise à jour
+## Mises à jour
 
 Les mises à jour sont obligatoires et se font automatiquement depuis la v3.7 lors du démarrage de l'application.
 
@@ -39,7 +30,7 @@ Les mises à jour sont obligatoires et se font automatiquement depuis la v3.7 lo
 
 1. Une fois la mise à jour effectuée cliquez sur [Rejoindre un serveur]
 2. Choisissez un nom. **Attention !** le nom de doit contenir que des caractères alphanumériques et contenir entre 3 et 16 caractères compris
-3. Entrez l'addresse ip du serveur. **Ne pas préciser le port**
+3. Entrez l'addresse ip du serveur **sans préciser le port**
 
 
 ## Inviter quelqu'un sur votre serveur
@@ -47,3 +38,8 @@ Les mises à jour sont obligatoires et se font automatiquement depuis la v3.7 lo
 1. Assurez vous que la personne à inviter est connectée au même réseau que vous
 2. Démarrez un serveur (*voir **Démarrer un serveur***)
 3. La personne doit se connecter au serveur (*voir **Se connecter à un serveur***) avec l'ip qui est affiché sur votre écran
+
+
+# A faire
+
+- Ajouter une liste des serveurs déjà visités
