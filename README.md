@@ -2,6 +2,7 @@ ChatBox v3.6
 
 Modifié pour la dernière fois le 22 mai 2022
 
+![Alt text](https://raw.githubusercontent.com/HubertBDLB/ChatBox/main/logo_6144_2048.png,"Logo ChatBox")
 
 # ChatBox v3.6
 
