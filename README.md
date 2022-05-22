@@ -11,9 +11,9 @@ Logiciel de chat en réseau local
 
 Lien de téléchargement : https://raw.githubusercontent.com/HubertBDLB/ChatBox/main/ChatBox.exe
 
-Lien du mode d'emploi : https://github.com/HubertBDLB/ChatBox/blob/main/README.md
+Mode d'emploi (markdown): https://github.com/HubertBDLB/ChatBox/blob/main/README.md
 
-
+Mode d'emploi (html): https://htmlpreview.github.io/?https://raw.githubusercontent.com/HubertBDLB/ChatBox/main/README.html
 # Mode d'emploi
 
 
