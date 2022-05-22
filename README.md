@@ -51,8 +51,8 @@ Les mises à jour sont obligatoires et se font automatiquement depuis la v3.7 lo
 ## Inviter quelqu'un sur votre serveur
 
 1. Assurez vous que la personne à inviter est connectée au même réseau que vous
-2. Démarrez un serveur *Instructions au dessus*
-3. Donnez à la personne l'addresse ip sans le port
+2. Démarrez un serveur *voir **Démarrer un serveur***
+3. La personne doit se connecter au serveur *voir **Se connecter à un serveur*** avec l'ip qui est affiché sur votre écran
 
 
 # Auteurs
