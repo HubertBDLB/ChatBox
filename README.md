@@ -9,14 +9,16 @@ Modifié pour la dernière fois le 22 mai 2022
 
 Logiciel de chat en réseau local
 
-[Télécharger](https://raw.githubusercontent.com/HubertBDLB/ChatBox/main/ChatBox.exe)
+**NE PAS TÉLÉCHARGER LA v3.6**
+**LA v3.7 SORT BIENTÔT AVEC UN SYSTÈME DE MISE À JOUR FONCTIONNEL**
+~~[Télécharger](https://raw.githubusercontent.com/HubertBDLB/ChatBox/main/ChatBox.exe)~~
 
 [Site internet](https://hubertbdlb.github.io/chatbox/)
 
 
 ## Mises à jour
 
-Les mises à jour sont obligatoires et se font automatiquement depuis la v3.7 lors du démarrage de l'application.
+Les mises à jour sont obligatoires et se feront automatiquement à partir la v3.7 lors du démarrage de l'application.
 
 
 ## Démarrer un serveur
@@ -40,6 +42,8 @@ Les mises à jour sont obligatoires et se font automatiquement depuis la v3.7 lo
 3. La personne doit se connecter au serveur (*voir **Se connecter à un serveur***) avec l'ip qui est affiché sur votre écran
 
 
-# A faire
+# Nouveautées prévues pour la v3.7
 
-- Ajouter une liste des serveurs déjà visités
+- Liste des serveurs déjà visités
+- Installeur
+- Mises à jour automatiques
