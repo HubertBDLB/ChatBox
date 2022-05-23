@@ -1,6 +1,6 @@
 ChatBox v3.6
 
-Modifié pour la dernière fois le 22 mai 2022
+Modifié pour la dernière fois le 23 mai 2022 à 18h19 UTC+2
 
 ![Alt text](https://raw.githubusercontent.com/HubertBDLB/ChatBox/main/images/logo_192_64.png)
 
@@ -10,7 +10,9 @@ Modifié pour la dernière fois le 22 mai 2022
 Logiciel de chat en réseau local
 
 **NE PAS TÉLÉCHARGER LA v3.6**
+
 **LA v3.7 SORT BIENTÔT AVEC UN SYSTÈME DE MISE À JOUR FONCTIONNEL**
+
 ~~[Télécharger](https://raw.githubusercontent.com/HubertBDLB/ChatBox/main/ChatBox.exe)~~
 
 [Site internet](https://hubertbdlb.github.io/chatbox/)
@@ -42,7 +44,7 @@ Les mises à jour sont obligatoires et se feront automatiquement à partir la v3
 3. La personne doit se connecter au serveur (*voir **Se connecter à un serveur***) avec l'ip qui est affiché sur votre écran
 
 
-# Nouveautées prévues pour la v3.7
+# Nouveautés prévues pour la v3.7
 
 - Liste des serveurs déjà visités
 - Installeur
