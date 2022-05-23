@@ -11,7 +11,7 @@ Logiciel de chat en réseau local
 
 [Télécharger](https://raw.githubusercontent.com/HubertBDLB/ChatBox/main/ChatBox.exe)
 
-[Site internet](https://hubertbdlb.github.io/ChatBox/)
+[Site internet](https://hubertbdlb.github.io/chatbox/)
 
 
 ## Mises à jour
