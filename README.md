@@ -33,7 +33,7 @@ Les mises à jour sont obligatoires et se feront automatiquement à partir la v3
 ## Se connecter à un serveur
 
 1. Une fois la mise à jour effectuée cliquez sur [Rejoindre un serveur]
-2. Choisissez un nom. **Attention !** le nom de doit contenir que des caractères alphanumériques et contenir entre 3 et 16 caractères compris
+2. Choisissez un nom. **Attention !** le nom ne doit contenir que des caractères alphanumériques et contenir entre 3 et 16 caractères compris
 3. Entrez l'addresse ip du serveur **sans préciser le port**
 
 
