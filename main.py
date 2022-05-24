@@ -1,12 +1,10 @@
 # coding: utf-8
 # ChatBox v3.6
-# derniere modification : 21/05/2022
+# derniere modification : 24/05/2022
 
 # A FAIRE :
 #   - Changer pseudo si déjà pris (Actuellement refuse la connection)
 #   - R.S.A. (tout dépend d'Antonin)
-
-
 
 
 #------------------------------------------------------------------------------------
@@ -22,7 +20,8 @@ import timeit       # Calcul temps réponse  |
 import socket       # Lien Client - Serveur |
 import threading    # Séparation des tâches |
 import tkinter      # Interface             |
-import requests     # Mises à jour          |
+import requests     # Vérif mise à jour     |
+import webbrowser   # Ouverture de l'aide   |
 #___________________|_______________________|
 
 from platform import system
@@ -33,13 +32,13 @@ from tkinter import scrolledtext,messagebox
 #                                      CONSTANTES
 #------------------------------------------------------------------------------------
 
-GITHUB_PATH = "https://raw.githubusercontent.com/HubertBDLB/ChatBox/main/"
+RAW_GITHUB_PATH = "https://raw.githubusercontent.com/HubertBDLB/ChatBox/main/"
 
 IMAGES_PATH = "images/"
 
-VERSION = "ChatBox v3.6"
+VERSION = "ChatBox v3.7"
 
-INVITE_MESSAGE = f"Installe {VERSION} depuis https://github.com/HubertBDLB/ChatBox/blob/main/README.md"
+INVITE_MESSAGE = f"Installe {VERSION} depuis hubertbdlb.github.io/chatbox"
 
 HELP_MESSAGE = """Liste des commandes :
 /help                       : Affiche ce message
@@ -103,41 +102,7 @@ PALE_YELLOW = "#e0e090"
 #------------------------------------------------------------------------------------
 #                                      FONCTIONS
 #------------------------------------------------------------------------------------
-def update():
-    update_label.config(text="Vérification des mises à jour...")
-    window.update()
 
-    new_main = resource_path("new_main.exe")
-    """Récupère le fichier main.py depuis GitHub et l'enregistre comme new_main.exe"""
-
-    try:
-        open(new_main).close()
-        os.remove(new_main)
-    except: 
-        pass
-
-    try: 
-        version_request = requests.get(GITHUB_PATH + 'README.md')
-    except:
-        update_label.config(text="Erreur de connexion")
-        return False
-
-    if version_request.content.decode("utf-8").split(NEW_LINE_CHAR)[0] != VERSION:
-        exe_request = requests.get(GITHUB_PATH + 'main.exe')
-        try: 
-            f = open(new_main,"wb")      
-            f.write(exe_request.content)
-            f.close()
-            os.system(f"cd {resource_path('')}")
-            run(['start',new_main], shell=True)
-            sys.exit(1)
-
-        except PermissionError: 
-            update_label.config(text="Veuillez fermer ChatBox depuis le gestionnaire des tâches") #FIXME
-            return False
-    
-    else:
-        return True
 
 def copy_to_clipboard(text):
     if system() == "Darwin":
@@ -164,12 +129,12 @@ def get_public_ip() -> str:
 
 def start_server():
     """Démarre une instance de la classe SERVER"""
-    window.destroy()
+    win.destroy()
     SERVER()
 
 def start_client():
     """Démarre une instance de la classe CLIENT"""
-    window.destroy()
+    win.destroy()
     CLIENT()
 
 ICON_PATH = resource_path(IMAGES_PATH + "icon_256.ico")
@@ -184,7 +149,12 @@ LOGO_PATH = resource_path(IMAGES_PATH + "logo_192_64.png")
 
 class SERVER:
     def __init__(self):
-        self.host = socket.gethostbyname_ex(socket.getfqdn())[2][0]
+        # Récupération addresse ip locale
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        self.host = s.getsockname()[0]
+        s.close()
+
         self.port = 9090
         self.gui_done = False
         self.running = True
@@ -221,6 +191,9 @@ class SERVER:
         self.win.grid_rowconfigure(1,weight=1)
         self.win.grid_columnconfigure(0,weight=1)
         self.win.grid_columnconfigure(1,weight=0)
+        
+        self.menu = tkinter.Menu(self.win)
+        self.menu.add_command(label="Aide",command = lambda: webbrowser.open_new_tab("hubertbdlb.github.io/chatbox"))
 
         self.text_area = scrolledtext.ScrolledText(self.win,font = MONO_FONT)
         self.input_area = tkinter.Text(self.win,height=3)
@@ -232,8 +205,9 @@ class SERVER:
         self.send_button.grid(column=1,row=2,sticky="nesw")               
 
         self.text_area.config(state="disabled")
-        self.gui_done = True
+        self.win.config(menu=self.menu)
         self.win.protocol('WM_DELETE_WINDOW',self.stop)
+        self.gui_done = True
         self.win.mainloop()
 
     # Commandes
@@ -568,6 +542,9 @@ class CLIENT:
         self.input_area = tkinter.Text(self.win,height=3)
         self.send_button = tkinter.Button(self.win,height=3,text="Envoyer",command=self.write)
         
+        self.menu = tkinter.Menu(self.win)
+        self.menu.add_command(label="Aide",command = lambda: webbrowser.open_new_tab("hubertbdlb.github.io/chatbox"))
+
         tkinter.Label(self.win,image=self.logo,bg=DARK_BLUE).grid(column=0,row=0,columnspan=2)
         self.text_area.grid(column=0,row=1,columnspan=2,sticky="nesw")    
         self.input_area.grid(column=0,row=2,sticky="nesw")                
@@ -670,36 +647,46 @@ class CLIENT:
 #                                       CHOIX SERVEUR CLIENT
 #------------------------------------------------------------------------------------
 def main():
-    global window, server_button, client_button, update_label
-    window = tkinter.Tk()
-    window.configure(bg=DARK_BLUE)
-    window.geometry("400x250")
-    window.title(VERSION)
-    window.eval("tk::PlaceWindow . center")
-    window.resizable(False,False)
-    window.wm_iconbitmap(ICON_PATH)
+    global win, server_button, client_button, update_label
+    win = tkinter.Tk()
+    win.configure(bg=DARK_BLUE)
+    win.geometry("400x250")
+    win.title(VERSION)
+    win.eval("tk::PlaceWindow . center")
+    win.resizable(False,False)
+    win.wm_iconbitmap(ICON_PATH)
     logo = tkinter.PhotoImage(file=LOGO_PATH)
-    tkinter.Label(window,image=logo,bg=DARK_BLUE).pack()
+    tkinter.Label(win,image=logo,bg=DARK_BLUE).pack()
 
-    server_button = tkinter.Button(window,text="Créer un serveur",padx=10,pady=10,bg=DARK_BLUE,fg=WHITE,font=DEFAULT_FONT,command=start_server)
-    client_button = tkinter.Button(window,text="Rejoindre un serveur",padx=10,pady=10,bg=DARK_BLUE,fg=WHITE,font=DEFAULT_FONT,command=start_client)
+    server_button = tkinter.Button(win,text="Créer un serveur",padx=10,pady=10,bg=DARK_BLUE,fg=WHITE,font=DEFAULT_FONT,command=start_server)
+    client_button = tkinter.Button(win,text="Rejoindre un serveur",padx=10,pady=10,bg=DARK_BLUE,fg=WHITE,font=DEFAULT_FONT,command=start_client)
+    update_label = tkinter.Label(win,font=DEFAULT_FONT,padx=10,pady=10,bg=LIGHT_GRAY,fg=RED)
+
     server_button.pack(expand=True,fill=BOTH)
     client_button.pack(expand=True,fill=BOTH)
+    update_label.pack()
 
     server_button.configure(state=DISABLED)
     client_button.configure(state=DISABLED)
-    update_label = tkinter.Label(window,bg=DARK_BLUE,fg=WHITE,font=DEFAULT_FONT)
-    update_label.pack()
-    window.update()
+    win.update()
 
-    if update():
-        update_label.config(text=VERSION)
+    # Mise à jour
+    update_label.config(text="Vérification des mises à jour...")
+    win.update()
 
-    
+    try: 
+        version_request = requests.get(RAW_GITHUB_PATH + 'README.md')
+    except:
+        update_label.config(text="Erreur de connexion")
+        return False
+    version_request = requests.get(RAW_GITHUB_PATH + 'README.md')
+    if version_request.content.decode("utf-8").split(NEW_LINE_CHAR)[0] != VERSION:
+        update_label.config(text="Mettre à jour (important)")
+        update_label.bind("<Button-1>", lambda e: webbrowser.open_new_tab("hubertbdlb.github.io/chatbox"))
     server_button.configure(state=ENABLED)
     client_button.configure(state=ENABLED)
     
-    window.mainloop()
+    win.mainloop()
 
 if __name__ == '__main__':
     main()
