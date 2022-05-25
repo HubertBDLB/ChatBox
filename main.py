@@ -21,13 +21,12 @@ import os                                   # Chemins & Commandes       |
 import timeit                               # Calcul temps réponse      |
 import socket                               # Lien Client - Serveur     |
 import threading                            # Séparation des tâches     |
-import tkinter
-from tkinter import simpledialog                              # Interface                 |
+import tkinter                              # Interface                 |
 import requests                             # Mises à jour              |
 import webbrowser                           # Mode d'emploi             |
 from platform import system                 #                           |
 from subprocess import check_call           #                           |
-from tkinter import scrolledtext,messagebox #                           |
+from tkinter import simpledialog,scrolledtext,messagebox                #
 #___________________________________________|___________________________|
 
 
@@ -95,6 +94,7 @@ Y = "y"
 BOTH = "both"
 DISABLED = "disabled"
 ENABLED = "normal"
+END = "end"
 
 RED = "#ff0000"
 DARK_BLUE = "#004080"
@@ -554,16 +554,21 @@ class CLIENT:
     def create_server_choice_gui(self): # TODO créer liste des serveurs favoris quand server un bouton a coté de server entry est cliqué
         self.nickname_frame.destroy()
         self.server_frame = tkinter.Frame(self.win,bg=DARK_BLUE)
+        self.servers_list_frame = tkinter.Frame(self.server_frame)
+
         self.server_label = tkinter.Label(self.server_frame,text = "IP du serveur :",bg=DARK_BLUE,fg=WHITE,font=DEFAULT_FONT)
         self.server_entry = tkinter.Entry(self.server_frame,font=DEFAULT_FONT)
+        self.servers_list_button = tkinter.Button(self.server_frame,text="▼",command=self.drop_servers_list)
         self.confirm_button = tkinter.Button(self.server_frame,text="Se connecter",bg=DARKER_BLUE,fg=WHITE,font=DEFAULT_FONT,command=self.server_choice)
         self.error_label = tkinter.Label(self.server_frame,bg=LIGHT_GRAY,fg=RED,font=DEFAULT_FONT)
         self.server_entry.bind("<Return>", self.server_choice)
-        
 
+    
         self.server_frame.pack(expand=True,fill=BOTH)
         self.server_label.pack(fill=BOTH,padx=10,pady=10)
         self.server_entry.pack(fill=Y,padx=10,pady=10)
+        self.servers_list_button.pack(fill=Y,padx=10,pady=10)
+        self.servers_list_frame.pack(expand=True,fill=BOTH)
         self.error_label.pack(fill=BOTH,padx=10,pady=10)
         self.confirm_button.pack(fill=BOTH,padx=10,pady=10)
 
@@ -651,7 +656,22 @@ class CLIENT:
 
 
     # Fonctions utiles
-    def get_servers(self,ip_only:bool = False) -> list:
+    def drop_servers_list(self):
+        self.servers_list_button.config(text="▲",command=self.hide_servers_list)
+        for server in self.get_servers():
+            tkinter.Button(self.servers_list_frame,text=server[1],command= lambda: self.insert_in_server_entry(server[0])).pack()
+
+    def hide_servers_list(self):
+        for widget in self.servers_list_frame.winfo_children():
+            widget.destroy()
+        self.servers_list_button.config(text="▼",command=self.drop_servers_list)
+
+
+    def insert_in_server_entry(self, ip: str):
+        self.server_entry.delete(0, END)
+        self.server_entry.insert(0, ip)
+
+    def get_servers(self,ip_only: bool = False) -> list:
         """ Récupère un serveur parmis les favoris """
         with open("servers.txt","r") as f:
             if ip_only:
@@ -660,7 +680,11 @@ class CLIENT:
                     ips.append(server.split(";")[0])
                 return ips
             else:
-                return f.readlines()
+                servers = []
+                for server in f.readlines():
+                    server_tuple = tuple(server.split(";"))
+                    servers.append(server_tuple)
+                return servers
 
 
     def register_server(self):
