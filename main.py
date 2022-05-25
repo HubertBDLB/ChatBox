@@ -16,16 +16,15 @@
 #_______________________________________________________________________
 # Bibliothèque                              | Utilisation               |
 #___________________________________________|___________________________|
-from asyncore import write
 import sys                                  # Quitter app & Chemins     |
 import os                                   # Chemins & Commandes       |
 import timeit                               # Calcul temps réponse      |
 import socket                               # Lien Client - Serveur     |
 import threading                            # Séparation des tâches     |
-import tkinter                              # Interface                 |
+import tkinter
+from tkinter import simpledialog                              # Interface                 |
 import requests                             # Mises à jour              |
 import webbrowser                           # Mode d'emploi             |
-import csv                                  # Enregistrement serveurs   |
 from platform import system                 #                           |
 from subprocess import check_call           #                           |
 from tkinter import scrolledtext,messagebox #                           |
@@ -112,25 +111,6 @@ PALE_YELLOW = "#e0e090"
 #------------------------------------------------------------------------------------
 #                                      FONCTIONS
 #------------------------------------------------------------------------------------
-
-
-def register_server(ip:str, name:str):
-    """ Enregistre un serveur aux favoris """
-    with open("servers.txt","a") as f:
-        if ip not in get_servers(ip_only=True):
-            f.write(f"{ip};{name}\n")
-
-
-def get_servers(ip_only:bool = False) -> list:
-    """ Récupère un serveur parmis les favoris """
-    with open("servers.txt","r") as f:
-        if ip_only:
-            ips = []
-            for server in f.readlines():
-                ips.append(server.split(";")[0])
-            return ips
-        else:
-            return f.readlines()
 
 
 def update():
@@ -350,7 +330,6 @@ class SERVER:
     
 
     def msg(self,name: str,message: str):
-        
         try:
             self.get_socket_from_name(name).send(message.encode("utf-8"))
             self.log(f"Message envoyé\n","command_result")
@@ -572,7 +551,7 @@ class CLIENT:
         self.confirm_button.pack(fill=BOTH,padx=10,pady=10)
 
 
-    def create_server_choice_gui(self):
+    def create_server_choice_gui(self): # TODO créer liste des serveurs favoris quand server un bouton a coté de server entry est cliqué
         self.nickname_frame.destroy()
         self.server_frame = tkinter.Frame(self.win,bg=DARK_BLUE)
         self.server_label = tkinter.Label(self.server_frame,text = "IP du serveur :",bg=DARK_BLUE,fg=WHITE,font=DEFAULT_FONT)
@@ -580,13 +559,13 @@ class CLIENT:
         self.confirm_button = tkinter.Button(self.server_frame,text="Se connecter",bg=DARKER_BLUE,fg=WHITE,font=DEFAULT_FONT,command=self.server_choice)
         self.error_label = tkinter.Label(self.server_frame,bg=LIGHT_GRAY,fg=RED,font=DEFAULT_FONT)
         self.server_entry.bind("<Return>", self.server_choice)
+        
 
         self.server_frame.pack(expand=True,fill=BOTH)
         self.server_label.pack(fill=BOTH,padx=10,pady=10)
         self.server_entry.pack(fill=Y,padx=10,pady=10)
         self.error_label.pack(fill=BOTH,padx=10,pady=10)
         self.confirm_button.pack(fill=BOTH,padx=10,pady=10)
-
 
     def create_texting_gui(self):
         self.server_frame.destroy() # Effacement du contenu de la fenêtre
@@ -603,6 +582,14 @@ class CLIENT:
         self.text_area = scrolledtext.ScrolledText(self.win,font = DEFAULT_FONT)
         self.input_area = tkinter.Text(self.win,height=3)
         self.send_button = tkinter.Button(self.win,height=3,text="Envoyer",command=self.write)
+        self.menu = tkinter.Menu(self.win)
+        self.menu.add_command(label="Mode d'emploi", command=lambda: webbrowser.open(WEBSITE_PATH))
+        if self.host not in self.get_servers(ip_only=True):
+            self.menu.add_command(label= "Ajouter aux favoris ☆", command=self.register_server)
+        else:
+            self.menu.add_command(label= "Supprimer des favoris ★", command=self.unregister_server)
+
+        self.win.config(menu=menu)
         
         # Affichage des widgets
         tkinter.Label(self.win,image=self.logo,bg=DARK_BLUE).grid(column=0,row=0,columnspan=2)
@@ -664,7 +651,45 @@ class CLIENT:
 
 
     # Fonctions utiles
+    def get_servers(self,ip_only:bool = False) -> list:
+        """ Récupère un serveur parmis les favoris """
+        with open("servers.txt","r") as f:
+            if ip_only:
+                ips = []
+                for server in f.readlines():
+                    ips.append(server.split(";")[0])
+                return ips
+            else:
+                return f.readlines()
 
+
+    def register_server(self):
+        """ Enregistre un serveur aux favoris """
+        with open("servers.txt","a") as f:
+            if self.host not in self.get_servers(ip_only=True):
+                f.write(f"{self.host};{simpledialog.askstring('Ajouter aux favoris','Choisissez un nom pour le serveur')}\n")
+                self.log("[Serveur ajouté aux favoris]")
+                self.menu.delete(2,2)
+                self.menu.add_command(label="Supprimer des favoris ★", command=self.unregister_server)
+    
+    def unregister_server(self):
+        """ Supprimer un serveur des favoris"""
+        with open("servers.txt","r") as f:
+            lines = f.readlines()
+        
+        # Récupère la ligne à supprimer
+        for number, line in enumerate(lines):
+            if line.split(";")[0] == self.host:
+                line_to_remove = number
+
+        # Réécrit tout le fichier sauf la ligne à supprimer
+        with open("servers.txt","w") as f:
+            for number, line in enumerate(lines):
+                if number != line_to_remove:
+                    f.write(line)
+
+        self.menu.delete(2,2)
+        self.menu.add_command(label="Ajouter aux favoris ☆", command=self.register_server)
 
     def log(self,message):
         if "@" + self.nickname in message: self.text_area.insert("end", message,"mention")
@@ -718,7 +743,7 @@ class CLIENT:
 
 
 def main():
-    global win, server_button, client_button, update_label
+    global win, server_button, client_button, update_label, menu
 
     # Création de la fenêtre
     win = tkinter.Tk()
