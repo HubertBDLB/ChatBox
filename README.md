@@ -5,7 +5,7 @@ Modifié pour la dernière fois le 24 Mai 2022 à 19h30 UTC+2
 
 
 
-# ![Alt text](https://raw.githubusercontent.com/HubertBDLB/ChatBox/main/images/logo_192_64.png) v3.7
+# ![Alt text](https://raw.githubusercontent.com/HubertBDLB/ChatBox/main/images/logo_192_64.png) v3.9
 
 Logiciel de chat en réseau local
 
