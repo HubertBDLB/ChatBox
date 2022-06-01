@@ -1,4 +1,4 @@
-ChatBox v3.7
+ChatBox v3.9
 
 Modifié pour la dernière fois le 24 Mai 2022 à 19h30 UTC+2
 
